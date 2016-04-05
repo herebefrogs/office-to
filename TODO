@@ -1,7 +1,10 @@
 13:00-14:00 setup app plumbing (git repo, gh-pages, client and render HTML pages, createJS libs, firebase DB...)
 14:00-15:00 basic device motion -> firebase -> render flow
-15:00-16:00 multi-user flow
+15:00-16:00 multi-user flow (assign random colors, make sure single user flow scales up)
 16:00-17:00 paint like rendering
 20:00-21:00 presentation (resources, slidedeck)
 
-host on github.com pages, use oanda shortener for ease of access o/logo.to (o/logo taken)
+nice to have:
+- paint dripping downward (saw that somewhere, createjs lab or video?)
+- number of firebase connected users
+- short URL (o/logo.to) on blank canvas
