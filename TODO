@@ -7,11 +7,7 @@ next day
 10:30-11:30 multi-user flow (assign random colors, make sure single user flow scales up)
 
 TODO:
-- remove the client input brush/layer (and data)
 - generate acceleration vector that make sense (updating the position and generating strokes)
-- randomize client startup position (or whatever)
-- make releasing client press actually work
-- change client UI when acceleration events are not available (or something)
 
 nice to have:
 - paint dripping downward (saw that somewhere, createjs lab or video?)
