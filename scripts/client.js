@@ -77,7 +77,6 @@
   ];
   var data = {
     color: COLORS[randomInt(0, COLORS.length - 1)],
-    pressed: false,
     pos: {
       x: 0,
       y: 0
@@ -131,8 +130,6 @@
       data.vel.y = Math.max(0, data.vel.y - VELOCITY_DRAG);
 
       elapsed_time = 0;
-      // move client input
-      clientRef.set(data);
 
       // add a new paint stroke
       if (data.vel.y > 1 || data.vel.x > 1) {
@@ -194,19 +191,4 @@
       rootRef.unauth();
     });
   }
-
-  // listen to tap down/up
-  var pressCallback = function(e) {
-    console.log('press', e);
-    data.pressed = true;
-    clientRef.set(data);
-  };
-  var releaseCallback = function(e) {
-    console.log('release', e);
-    data.pressed = false;
-    clientRef.set(data);
-  };
-  document.addEventListener('mousedown', pressCallback);
-  // TODO fix release
-  document.addEventListener('click', releaseCallback);
 })();
