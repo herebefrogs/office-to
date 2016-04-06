@@ -1,11 +1,12 @@
 13:00-13:30 setup app plumbing (git repo, gh-pages, client and render HTML pages, createJS libs, firebase DB...)
 13:45-21:45 basic device motion -> firebase -> render flow
-21:45-22:30 paint like rendering
-?-? multi-user flow (assign random colors, make sure single user flow scales up)
-?-? presentation (resources, slidedeck)
+21:45-23:00 paint like rendering (not working)
+23:00-23:30 presentation (resources, slidedeck)
+next day
+9:30-10:15 paint like rendering (actually working)
+10:30-11:30 multi-user flow (assign random colors, make sure single user flow scales up)
 
 TODO:
-- add OANDA SVG layer
 - generate acceleration vector that make sense (updating the position and generating strokes)
 - randomize client startup position (or whatever)
 - make releasing client press actually work

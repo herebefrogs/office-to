@@ -14,9 +14,8 @@
   // setup CreateJS objects
   var stage = new createjs.Stage('canvas');
   var renderContainer = new createjs.Container();
-  var logoContainer = new createjs.Container();
   var inputContainer = new createjs.Container();
-  stage.addChild(renderContainer, logoContainer, inputContainer);
+  stage.addChild(renderContainer, inputContainer);
 
   // main rendering loop
   var update = function(event) {

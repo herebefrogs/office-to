@@ -18,7 +18,7 @@
   };
   var elapsed_time = 0; // in seconds
   var FRAME_RATE = 0.15; // in seconds
-  var MAX_DRIFT = 100; // in pixels
+  var MAX_DRIFT = 150; // in pixels
   var MAX_HEIGHT; // in pixels
   var MAX_RADIUS = 50; // in pixels
   var MIN_RADIUS = 5; // in pixels
