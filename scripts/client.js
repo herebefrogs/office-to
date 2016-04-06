@@ -6,10 +6,9 @@
   var clientRef;
   var data = {
     pressed: false,
-    // TODO randomize
     pos: {
-      x: 320,
-      y: 240
+      x: 0,
+      y: 0
     },
     vel: {
       x: 0,
@@ -45,12 +44,14 @@
     } else {
       data.uid = authData.uid;
 
-      // load screen size
+      // load screen size & randomize start position
       rootRef.child('width').once('value', function(snapshot) {
         MAX_WIDTH = snapshot.val();
+        data.pos.x = randomInt(0, MAX_WIDTH);
       });
       rootRef.child('height').once('value', function(snapshot) {
         MAX_HEIGHT = snapshot.val();
+        data.pos.y = randomInt(0, MAX_HEIGHT);
       });
 
       // add client to client list
