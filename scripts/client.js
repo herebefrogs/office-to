@@ -8,8 +8,8 @@
     pressed: false,
     // TODO randomize
     pos: {
-      x: 0,
-      y: 0
+      x: 320,
+      y: 240
     }
   };
   var elapsed_time = 0;
@@ -25,9 +25,9 @@
     if (error) {
       console.error('Firebase login failed!', error);
     } else {
-      uid = authData.uid;
+      data.uid = authData.uid;
 
-      clientRef = rootRef.child('users/' + uid);
+      clientRef = rootRef.child('users/' + data.uid);
       clientRef.set(data);
     }
   }, { remember: 'sessionOnly' });

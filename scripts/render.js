@@ -1,6 +1,9 @@
 (function() {
   'use strict';
 
+  var nb_users = 0;
+  var inputs = {};
+
   createjs.Ticker.setFPS(30);
 
   // resize canvas to fit screen
@@ -23,11 +26,42 @@
   createjs.Ticker.addEventListener('tick', update);
 
 
+  var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
+  var usersRef = rootRef.child('users');
 
-  var myDataRef = new Firebase('https://office-to-logo.firebaseio.com/');
-  myDataRef.on('child_added', function(snapshot) {
-    var stroke = snapshot.val();
-    console.log(stroke.user, stroke.msg);
+  usersRef.on('child_added', function(snapshot) {
+    var user = snapshot.val();
+    document.getElementById('users').innerHTML = ++nb_users;
+
+    var shape = new createjs.Shape();
+    shape.x = user.pos.x;
+    shape.y = user.pos.y;
+    shape.graphics.setStrokeStyle(2)
+                  .beginStroke('#000')
+                  .drawCircle(0, 0, 30);
+    inputContainer.addChild(shape);
+    inputs[user.uid] = shape;
+
+    console.log('connected', user);
+  });
+
+  usersRef.on('child_changed', function(snapshot) {
+    var user = snapshot.val();
+    var shape = inputs[user.uid];
+    shape.x = user.pos.x;
+    shape.y = user.pos.y;
+
+    console.log('moved', user);
+  });
+
+  usersRef.on('child_removed', function(snapshot) {
+    var user = snapshot.val();
+    document.getElementById('users').innerHTML = --nb_users;
+
+    inputContainer.removeChild(inputs[user.uid]);
+    delete inputs[user.uid];
+
+    console.log('disconnected', user);
   });
 
 })();
