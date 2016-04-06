@@ -18,11 +18,24 @@
   };
   var elapsed_time = 0; // in seconds
   var FRAME_RATE = 0.15; // in seconds
-  var MAX_WIDTH;
-  var MAX_HEIGHT;
+  var MAX_DRIFT = 100; // in pixels
+  var MAX_HEIGHT; // in pixels
+  var MAX_RADIUS = 50; // in pixels
+  var MIN_RADIUS = 5; // in pixels
+  var MAX_WIDTH; // in pixels
   var previous_time = 0; // in milliseconds
+  var strokesRef;
   var uid;
   var VELOCITY_DRAG = 1; // velocity reduction per frame rate
+
+  // max excluded
+  var random = function(min, max) {
+    return Math.random() * (max - min) + min;
+  };
+  // max included
+  var randomInt = function(min, max) {
+    return Math.floor(random(min, max + 1));
+  };
 
   // sign in anonymously
   var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
@@ -32,14 +45,19 @@
     } else {
       data.uid = authData.uid;
 
+      // load screen size
       rootRef.child('width').once('value', function(snapshot) {
         MAX_WIDTH = snapshot.val();
       });
       rootRef.child('height').once('value', function(snapshot) {
         MAX_HEIGHT = snapshot.val();
       });
+
+      // add client to client list
       clientRef = rootRef.child('users/' + data.uid);
       clientRef.set(data);
+
+      strokesRef = rootRef.child('strokes');
     }
   }, { remember: 'sessionOnly' });
 
@@ -87,7 +105,18 @@
       data.vel.y = Math.max(0, data.vel.y - VELOCITY_DRAG);
 
       elapsed_time = 0;
+      // move client input
       clientRef.set(data);
+
+      // add a new paint stroke
+      if (data.vel.y > 1 || data.vel.x > 1) {
+        strokesRef.push({
+          color: '#f00',
+          radius: randomInt(MIN_RADIUS, MAX_RADIUS),
+          x: data.pos.x + randomInt(0, MAX_DRIFT),
+          y: data.pos.y + randomInt(0, MAX_DRIFT),
+        });
+      }
 
       if (DEBUG) {
         document.getElementById('x').innerHTML = data.vel.x;

@@ -32,6 +32,23 @@
     height: window.innerHeight
   });
 
+  var strokesRef = rootRef.child('strokes');
+
+  // new paint stroke
+  strokesRef.on('child_added', function(snapshot) {
+    var stroke = snapshot.val();
+
+    var shape = new createjs.Shape();
+    shape.x = stroke.x;
+    shape.y = stroke.y;
+    shape.graphics.beginFill(stroke.color)
+                  .drawCircle(0, 0, stroke.radius);
+    renderContainer.addChild(shape);
+
+    console.log('new stroke', stroke);
+  });
+
+  // listen for user events (connect, move, disconnect)
   var usersRef = rootRef.child('users');
 
   usersRef.on('child_added', function(snapshot) {
