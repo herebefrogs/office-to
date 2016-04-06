@@ -99,48 +99,7 @@
   var uid;
   var VELOCITY_DRAG = 1; // velocity reduction per frame rate
 
-  // sign in anonymously
-  var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
-  rootRef.authAnonymously(function(error, authData) {
-    if (error) {
-      console.error('Firebase login failed!', error);
-    } else {
-      data.uid = authData.uid;
-
-      // load screen size & randomize start position
-      rootRef.child('width').once('value', function(snapshot) {
-        MAX_WIDTH = snapshot.val();
-        data.pos.x = randomInt(0, MAX_WIDTH);
-      });
-      rootRef.child('height').once('value', function(snapshot) {
-        MAX_HEIGHT = snapshot.val();
-        data.pos.y = randomInt(0, MAX_HEIGHT);
-      });
-
-      // add client to client list
-      clientRef = rootRef.child('users/' + data.uid);
-      clientRef.set(data);
-
-      strokesRef = rootRef.child('strokes');
-
-      // show your current paint color
-      document.body.style.backgroundColor = data.color;
-    }
-  }, { remember: 'sessionOnly' });
-
-  // sign out when closing window
-  window.addEventListener('beforeunload', function(event) {
-    clientRef.set(null);
-    rootRef.unauth();
-  });
-
-  // listen to acceleration events every second
-  if (!window.DeviceMotionEvent) {
-    // TODO change UI to indicate that
-    console.log('you cannot participate');
-    document.innerHtml = 'you cannot participate';
-  }
-  window.addEventListener('devicemotion', function(event) {
+  var processDeviceMotion = function(event) {
     var delta_time = (event.timeStamp - previous_time) / 1000 / FRAME_RATE;
     elapsed_time += delta_time;
     previous_time = event.timeStamp;
@@ -190,7 +149,51 @@
         document.getElementById('y').innerHTML = dat.vel.y;
       }
     }
-  });
+  };
+
+  if (!window.DeviceMotionEvent) {
+    document.innerHtml = 'Sorry, your device does not provide gyro/accelerometer data';
+  } else {
+    // sign in anonymously
+    var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
+    rootRef.authAnonymously(function(error, authData) {
+      if (error) {
+        console.error('Firebase login failed!', error);
+      } else {
+        data.uid = authData.uid;
+
+        // load screen size & randomize start position
+        rootRef.child('width').once('value', function(snapshot) {
+          MAX_WIDTH = snapshot.val();
+          data.pos.x = randomInt(0, MAX_WIDTH);
+          console.log('x', data.pos.x, MAX_WIDTH);
+        });
+        rootRef.child('height').once('value', function(snapshot) {
+          MAX_HEIGHT = snapshot.val();
+          data.pos.y = randomInt(0, MAX_HEIGHT);
+          console.log('y', data.pos.y, MAX_HEIGHT);
+        });
+
+        // add client to client list
+        clientRef = rootRef.child('users/' + data.uid);
+        clientRef.set(data);
+
+        strokesRef = rootRef.child('strokes');
+
+        // show your current paint color
+        document.body.style.backgroundColor = data.color;
+
+        // listen to acceleration events every second
+        window.addEventListener('devicemotion', processDeviceMotion);
+      }
+    }, { remember: 'sessionOnly' });
+
+    // sign out when closing window
+    window.addEventListener('beforeunload', function(event) {
+      clientRef.set(null);
+      rootRef.unauth();
+    });
+  }
 
   // listen to tap down/up
   var pressCallback = function(e) {
