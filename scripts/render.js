@@ -27,6 +27,11 @@
 
 
   var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
+  rootRef.set({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
   var usersRef = rootRef.child('users');
 
   usersRef.on('child_added', function(snapshot) {

@@ -18,9 +18,11 @@
   };
   var elapsed_time = 0; // in seconds
   var FRAME_RATE = 0.15; // in seconds
-  var VELOCITY_DRAG = 5; // velocity reduction per frame rate
+  var MAX_WIDTH;
+  var MAX_HEIGHT;
   var previous_time = 0; // in milliseconds
   var uid;
+  var VELOCITY_DRAG = 1; // velocity reduction per frame rate
 
   // sign in anonymously
   var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
@@ -30,6 +32,12 @@
     } else {
       data.uid = authData.uid;
 
+      rootRef.child('width').once('value', function(snapshot) {
+        MAX_WIDTH = snapshot.val();
+      });
+      rootRef.child('height').once('value', function(snapshot) {
+        MAX_HEIGHT = snapshot.val();
+      });
       clientRef = rootRef.child('users/' + data.uid);
       clientRef.set(data);
     }
@@ -60,11 +68,18 @@
     data.vel.y += event.acceleration.y * delta_time;
 /*
     // position from velocity
+    // NOTE: actual formula, terrible results
     data.pos.x += data.vel.x * delta_time + -event.acceleration.x * delta_time * delta_time;
     data.pos.y += data.vel.y * delta_time + event.acceleration.y * delta_time * delta_time;
 */
     data.pos.x += data.vel.x;
     data.pos.y += data.vel.y;
+
+    // wrap the input around the physical screen (in case we can keep it in)
+    if (data.pos.x < 0) data.pos.x = MAX_WIDTH;
+    if (data.pos.y < 0) data.pos.y = MAX_HEIGHT;
+    if (data.pos.x > MAX_WIDTH) data.pos.x = 0;
+    if (data.pos.y > MAX_HEIGHT) data.pos.y = 0;
 
     if (elapsed_time > FRAME_RATE) {
       // apply drag (or circle never stops)
