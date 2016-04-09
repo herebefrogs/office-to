@@ -3,8 +3,6 @@
 
   var nb_users = 0;
 
-  createjs.Ticker.setFPS(30);
-
   // resize canvas to fit screen
   var canvas = document.getElementById('canvas');
   canvas.width = window.innerWidth;
@@ -14,14 +12,6 @@
   var stage = new createjs.Stage('canvas');
   var renderContainer = new createjs.Container();
   stage.addChild(renderContainer);
-
-  // main rendering loop
-  var update = function(event) {
-    stage.update();
-  };
-
-  createjs.Ticker.addEventListener('tick', update);
-
 
   var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
   rootRef.set({
@@ -41,6 +31,8 @@
     shape.graphics.beginFill(stroke.color)
                   .drawCircle(0, 0, stroke.radius);
     renderContainer.addChild(shape);
+
+    stage.update();
 
     console.log('new stroke', stroke);
   });
