@@ -13,7 +13,7 @@
   var renderContainer = new createjs.Container();
   stage.addChild(renderContainer);
 
-  var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
+  var rootRef = new Firebase('https://oanda-office-to-logo.firebaseio.com/');
   rootRef.set({
     width: window.innerWidth,
     height: window.innerHeight

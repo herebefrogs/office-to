@@ -152,7 +152,7 @@
     document.innerHtml = 'Sorry, your device does not provide gyro/accelerometer data';
   } else {
     // sign in anonymously
-    var rootRef = new Firebase('https://office-to-logo.firebaseio.com/');
+    var rootRef = new Firebase('https://oanda-office-to-logo.firebaseio.com/');
     rootRef.authAnonymously(function(error, authData) {
       if (error) {
         console.error('Firebase login failed!', error);
