@@ -3,8 +3,8 @@ Collaborative logo design experiment
 Quick start
 -----------
 - Empty the Firebase instance: https://oanda-office-to-logo.firebaseio.com/
-- Load the Toronto Office render page in a web browser: https://github-ent.dev.oanda.com/pages/jerome/office-to-logo/render.html
-- Visit https://github-ent.dev.oanda.com/pages/jerome/office-to-logo/ on your smartphone and follow on-screen instructions
+- Load the Toronto Office render page in a web browser: https://oanda-office-to-logo.firebaseapp.com/render.html
+- Visit https://oanda-office-to-logo.firebaseapp.com on your smartphone and follow on-screen instructions
 
 Setup
 -----

@@ -1,0 +1,13 @@
+{
+  "firebase": "oanda-office-to-logo",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "LICENSE",
+    "README.md",
+    "TODO",
+    ".git/**/*",
+    "**/node_modules/**",
+    "**/.DS_Store"
+  ]
+}
