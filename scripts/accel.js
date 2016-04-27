@@ -1,77 +1,96 @@
-var x_data = [  ];
-var y_data = [  ];
-var z_data = [  ];
+var data_accel_x = [  ];
+var data_accel_grav_x = [  ];
+var data_accel_y = [  ];
+var data_accel_grav_y = [  ];
+var data_accel_z = [  ];
+var data_accel_grav_z = [  ];
+
 
 var palette = new Rickshaw.Color.Palette();
-var graph = new Rickshaw.Graph( {
-        element: document.querySelector("#chart"),
-        width: 580,
-        height: 250,
-        renderer: 'line',
-        series: [ {
-                color: palette.color(),
-                data: x_data,
-                name: 'X acceleration'
-              }, {
-                color: palette.color(),
-                data: z_data,
-                name: 'Y acceleration'
-              }, {
-                color: palette.color(),
-                data: z_data,
-                name: 'Z acceleration'
-        } ]
-} );
-
-var legend = new Rickshaw.Graph.Legend({
-    graph: graph,
-    element: document.querySelector('#legend')
-});
-
 var time = new Rickshaw.Fixtures.Time();
 var seconds = time.unit('second');
 
-var xAxis = new Rickshaw.Graph.Axis.Time({
-    graph: graph,
-    timeUnit: seconds
-});
+var create_chart = function(id_label, data, legend_label, data2, legend_label2) {
 
-var yAxis = new Rickshaw.Graph.Axis.Y({
-    graph: graph,
-    tickFormat: Rickshaw.Fixtures.Number.formatKMBT
-});
+  var chart_elt = document.createElement('div');
+  chart_elt.id = '#chart_' + id_label;
+  document.body.appendChild(chart_elt);
+  var legend_elt = document.createElement('div');
+  legend_elt.id = '#legend_' + id_label;
+  document.body.appendChild(legend_elt);
 
-graph.render();
+  var series = [ {
+    color: palette.color(),
+    data: data,
+    name: legend_label
+  } ];
+
+  if (data2 && legend_label2) {
+    series.push({
+      color: palette.color(),
+      data: data2,
+      name: legend_label2
+    });
+  }
+
+  var graph = new Rickshaw.Graph( {
+    element: chart_elt,
+    width: 580,
+    height: 250,
+    renderer: 'line',
+    series: series
+  } );
+
+  var legend = new Rickshaw.Graph.Legend({
+      graph: graph,
+      element: legend_elt
+  });
+
+  var axis_t = new Rickshaw.Graph.Axis.Time({
+      graph: graph,
+      timeUnit: seconds
+  });
+
+  var axis_v = new Rickshaw.Graph.Axis.Y({
+      graph: graph,
+      tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+  });
+
+  graph.render();
+
+  return graph;
+};
+
+var graph_accel_x = create_chart('accel_x', data_accel_x, 'X acceleration', data_accel_grav_x, 'X acceleration (including gravity)');
+var graph_accel_y = create_chart('accel_y', data_accel_y, 'Y acceleration', data_accel_grav_y, 'Y acceleration (including gravity)');
+var graph_accel_z = create_chart('accel_z', data_accel_z, 'Z acceleration', data_accel_grav_z, 'Z acceleration (including gravity)');
+
 
 var start_time = Date.now();
-
 var THROTTLE = 10;
 var n = 0;
 
 window.addEventListener('devicemotion', function(event) {
   var refresh = 0 === (n++ % THROTTLE);
   var t = (start_time - event.timeStamp) / 1000;
-  var x = event.acceleration.x;
-  var y = event.acceleration.y;
-  var z = event.acceleration.z;
 
-  if (x > 1) {
-    x_data.push({ x: t, y: x });
-  } else if (refresh) {
-    x_data.push({ x: t, y: 0 });
-  }
-  if (y > 1) {
-    y_data.push({ x: t, y: y });
-  } else if (refresh) {
-    y_data.push({ x: t, y: 0 });
-  }
-  if (z > 1) {
-    z_data.push({ x: t, y: z });
-  } else if (refresh) {
-    z_data.push({ x: t, y: 0 });
-  }
+  var process_data = function(value, data) {
+    if (value > 1) {
+      data.push({ x: t, y: value });
+    } else if (refresh) {
+      data.push({ x: t, y: 0 });
+    }
+  };
+  process_data(event.acceleration.x, data_accel_x);
+  process_data(event.accelerationIncludingGravity.x, data_accel_grav_x);
+  process_data(event.acceleration.y, data_accel_y);
+  process_data(event.accelerationIncludingGravity.y, data_accel_grav_y);
+  process_data(event.acceleration.z, data_accel_z);
+  process_data(event.accelerationIncludingGravity.z, data_accel_grav_z);
 
   if (refresh) {
-    graph.render();
+    graph_accel_x.render();
+    graph_accel_y.render();
+    graph_accel_z.render();
   }
 });
