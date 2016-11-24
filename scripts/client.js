@@ -8,8 +8,8 @@
   var data = {
     color: COLORS[randomInt(0, COLORS.length - 1)],
     pos: {
-      x: 0,
-      y: 0
+      x: randomInt(0, 100),
+      y: randomInt(0, 100)
     },
     vel: {
       x: 0,
@@ -18,8 +18,6 @@
   };
   var elapsed_time = 0; // in seconds
   var FRAME_RATE = 0.15; // in seconds
-  var MAX_HEIGHT; // in pixels
-  var MAX_WIDTH; // in pixels
   var previous_time = 0; // in milliseconds
   var strokesRef;
   var uid;
@@ -46,10 +44,10 @@
     data.pos.y += data.vel.y;
 
     // wrap the input around the physical screen (in case we can keep it in)
-    if (data.pos.x < 0) data.pos.x = MAX_WIDTH;
-    if (data.pos.y < 0) data.pos.y = MAX_HEIGHT;
-    if (data.pos.x > MAX_WIDTH) data.pos.x = 0;
-    if (data.pos.y > MAX_HEIGHT) data.pos.y = 0;
+    while (data.pos.x < 0) { data.pos.x += 100; }
+    while (data.pos.y < 0) { data.pos.y += 100; }
+    while (data.pos.x > 100) { data.pos.x -= 100; }
+    while (data.pos.y > 100) { data.pos.y -= 100; }
 
     if (elapsed_time > FRAME_RATE) {
       // apply drag (or circle never stops)
@@ -80,18 +78,6 @@
         console.error('Firebase login failed!', error);
       } else {
         data.uid = authData.uid;
-
-        // load screen size & randomize start position
-        rootRef.child('width').once('value', function(snapshot) {
-          MAX_WIDTH = snapshot.val();
-          data.pos.x = randomInt(0, MAX_WIDTH);
-          console.log('x', data.pos.x, MAX_WIDTH);
-        });
-        rootRef.child('height').once('value', function(snapshot) {
-          MAX_HEIGHT = snapshot.val();
-          data.pos.y = randomInt(0, MAX_HEIGHT);
-          console.log('y', data.pos.y, MAX_HEIGHT);
-        });
 
         // add client to client list
         clientRef = rootRef.child('users/' + data.uid);

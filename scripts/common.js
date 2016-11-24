@@ -72,7 +72,7 @@
     '#263238'
   ];
 
-  window.MAX_DRIFT = 150; // in pixels
+  window.MAX_DRIFT = 15; // in % of screen size
   window.MAX_RADIUS = 50; // in pixels
   window.MIN_RADIUS = 5; // in pixels
 

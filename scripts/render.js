@@ -6,15 +6,24 @@
   var MAX_NEW_STROKES = 10; // being added at every interval in "demo" mode
   var MAX_STROKES = 1000; // in total on screen
 
-  // resize canvas to fit screen
-  var canvas = document.getElementById('canvas');
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
   // setup CreateJS objects
   var stage = new createjs.Stage('canvas');
   var renderContainer = new createjs.Container();
   stage.addChild(renderContainer);
+
+  // resize canvas to fit screen
+  var canvas = document.getElementById('canvas');
+  var resize = function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    renderContainer.children.forEach(function(shape) {
+      shape.x = Math.round(shape.px * canvas.width / 100);
+      shape.y = Math.round(shape.py * canvas.height / 100);
+    });
+    stage.update();
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
   var rootRef = new Firebase('https://oanda-office-to-logo.firebaseio.com/');
   var strokesRef = rootRef.child('strokes');
@@ -24,8 +33,8 @@
     var stroke = snapshot.val();
 
     var shape = new createjs.Shape();
-    shape.x = stroke.x;
-    shape.y = stroke.y;
+    shape.x = Math.round(stroke.x * canvas.width / 100);
+    shape.y = Math.round(stroke.y * canvas.height / 100);
     shape.graphics.beginFill(stroke.color)
                   .drawCircle(0, 0, stroke.radius);
     renderContainer.addChild(shape);
@@ -34,8 +43,11 @@
 
     // keep track of key for removal later
     shape.key = snapshot.key();
+    // keep track of original x/y percentages in case of window resize
+    shape.px = stroke.x;
+    shape.py = stroke.y;
 
-    //console.log('new stroke #', shape.key, stroke);
+    //console.log('new stroke #', shape.key, stroke, shape.x, shape.y);
   });
 
   strokesRef.on('child_removed', function(snapshot) {
@@ -73,8 +85,8 @@
   setInterval(function() {
     if (nb_users < 1) {
       var color = COLORS[randomInt(0, COLORS.length - 1)];
-      var x = randomInt(0, window.innerWidth);
-      var y = randomInt(0, window.innerHeight);
+      var x = randomInt(0 + MAX_DRIFT, 100 - MAX_DRIFT);
+      var y = randomInt(0 + MAX_DRIFT, 100 - MAX_DRIFT);
 
       for (var n = randomInt(1, MAX_NEW_STROKES); n > 0; n--) {
         addStroke(strokesRef, color,   x, y);
