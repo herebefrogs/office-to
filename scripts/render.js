@@ -17,11 +17,6 @@
   stage.addChild(renderContainer);
 
   var rootRef = new Firebase('https://oanda-office-to-logo.firebaseio.com/');
-  rootRef.set({
-    width: window.innerWidth,
-    height: window.innerHeight
-  });
-
   var strokesRef = rootRef.child('strokes');
 
   // new paint stroke
@@ -48,7 +43,7 @@
 
     for (var i = 0; i < renderContainer.children.length; i++) {
       if (renderContainer.getChildAt(i).key === key) {
-        console.log('removing #', key, 'at position', i, 'from canvas');
+        //console.log('removing #', key, 'at position', i, 'from canvas');
         renderContainer.removeChildAt(i);
         break;
       }
