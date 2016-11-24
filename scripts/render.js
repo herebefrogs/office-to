@@ -3,8 +3,8 @@
 
   var nb_users = 0;
   var DEMO_STROKES_INTERVAL = 30000; // in seconds
-  var MAX_NEW_STROKES = 5; // being added at every interval in "demo" mode
-  var MAX_STROKES = 250; // in total on screen
+  var MAX_NEW_STROKES = 10; // being added at every interval in "demo" mode
+  var MAX_STROKES = 1000; // in total on screen
 
   // resize canvas to fit screen
   var canvas = document.getElementById('canvas');
