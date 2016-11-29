@@ -80,8 +80,8 @@
     strokesRef.push({
       color: color,
       radius: randomInt(MIN_RADIUS, MAX_RADIUS),
-      x: x + randomInt(0, MAX_DRIFT),
-      y: y + randomInt(0, MAX_DRIFT),
+      x: x + randomInt(-MAX_DRIFT, MAX_DRIFT),
+      y: y + randomInt(-MAX_DRIFT, MAX_DRIFT),
     });
   };
 })();
